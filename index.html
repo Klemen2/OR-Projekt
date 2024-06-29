@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>STM32 Maze game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css.css">
+    <link rel="stylesheet" href="/emgithub.css">
+    <script type="text/javascript" src="/emgithub.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="wrapper">
+            <a href="/">Klemen's Stuff</a>
+        </div>
+    </header>
+    <div class="context sticky">
+        <div class="wrapper">
+            <div>
+                <a href="#"><svg height="20px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-10 -250 1674 1792">
+                    <path fill="currentColor" d="M1408 992v480c0 35 -29 64 -64 64h-384v-384h-256v384h-384c-35 0 -64 -29 -64 -64v-480c0 -2 1 -4 1 -6l575 -474l575 474c1 2 1 4 1 6zM1631 923l-62 74c-5 6 -13 10 -21 11h-3c-8 0 -15 -2 -21 -7l-692 -577l-692 577c-7 5 -15 8 -24 7c-8 -1 -16 -5 -21 -11l-62 -74 c-11 -13 -9 -34 4 -45l719 -599c42 -35 110 -35 152 0l244 204v-195c0 -18 14 -32 32 -32h192c18 0 32 14 32 32v408l219 182c13 11 15 32 4 45z"/>
+                 </svg></a> |
+                <span class="dropdown">
+                    <a href="#maze">Pacman game</a> |
+                    <div class="submenu">
+                    </div>
+                </span>
+                
+                <a href="#case">Case</a> |
+                <a href="https://github.com/Klemen2/OR-Projekt/tree/main/Pacman">Source code</a>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="wrapper">
+            <div class="title">Making a pacman game on STM32H750B-DK</div>
+            The goal of the project is to implement pacman game using C programing language. I'll be using a 
+            <a href="https://github.com/LAPSyLAB/ORLab-STM32H7/tree/main/STM32H750B-DK_BSP_C_Basic">template project<sup class="print">1</sup></a> that allready has 
+            implemented some basic functionalities and additional drivers. 
+            <span class="print"><br><sup>1 </sup>https://github.com/LAPSyLAB/ORLab-STM32H7/tree/main/STM32H750B-DK_BSP_C_Basic</span>
+            <div class="center">
+                <figure>
+                    <video width="400" controls>
+                        <source src="images/gameplay.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <figcaption><span class="print">Video of a</span><span class="noprint">A</span> pacman game gameplay on STM32H750B-DK</figcaption>
+                </figure>
+            </div>
+            <h1 id="parts">Parts list</h1>
+            <ul>
+                <li><a href="https://www.st.com/en/evaluation-tools/stm32h750b-dk.html">STM32H750B-DK</a> Discovery kit with STM32H750XB MCU
+                </li>
+            </ul>
+  
+            <h1 id="maze">Pacman game</h1>
+            https://pacman.holenet.info/
+            
+
+            
+            
+            <h1 id="case">Case</h1>
+            Since standalone STM32H750B-DK is not the most comfortable thing to hold in hands so I also designed a cases for easier useage of it. 
+            The case can be easily opened from the back to access board connectors that are on the back, all other connectors that are on the side are also accessible.
+            <p>Before printing the case needs to be scaled to match 3D printer tolerances by up to 1%, since it's designed 1:1 with the CAD files that I found <a class="noprint" href="https://www.st.com/en/evaluation-tools/stm32h750b-dk.html#cad-resources">here</a><span class="print">https://www.st.com/en/evaluation-tools/stm32h750b-dk.html#cad-resources</span>.
+            Otherwise you will need a lot of sanding if you decide not to do so.
+            <p>You will need 4 screws. I'm using Ø2.5 10 mm with a head hight of 2.5mm that I had laying around.
+
+            <p>The case was designed in blender and you can find it <a class="noprint" href="https://makerworld.com/en/models/517051">here</a><span class="print">https://makerworld.com/en/models/517051</span>.
+
+            <div class="imageRow">
+                <figure>
+                    <img src="images/case_front.jpg" loading="lazy">
+                    <figcaption>Case - front side</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/case_back.jpg" loading="lazy">
+                    <figcaption>Case - back side</figcaption>
+                </figure>
+            </div>
+            <div class="center">
+                <figure style="width: 372px">
+                    <img src="images/case_opened.jpg" loading="lazy">
+                    <figcaption>Case - opened</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="wrapper center links">
+            <div class="wrapper center links">
+                <a href="https://github.com/Klemen2" class="center">
+                    <svg height="20" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16"
+                        data-view-component="true" class="octicon octicon-mark-github v-align-middle">
+                        <path fill-rule="evenodd"
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+                        </path>
+                    </svg>
+                    <span class="padding-left noprint">Klemen2</span>
+                    <span class="padding-left print">https://github.com/Klemen2</span>
+                </a>
+                <a href="mailto:sustarklemen1@gmail.com" class="center">
+                    <svg height="20" color="black" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-10 0 1812 1792">
+                        <path fill="currentColor" d="M1792 710v794c0 88 -72 160 -160 160h-1472c-88 0 -160 -72 -160 -160v-794c30 33 64 62 101 87c166 113 334 226 497 345c84 62 188 138 297 138h1h1c109 0 213 -76 297 -138c163 -118 331 -232 498 -345c36 -25 70 -54 100 -87zM1792 416c0 112 -83 213 -171 274 c-156 108 -313 216 -468 325c-65 45 -175 137 -256 137h-1h-1c-81 0 -191 -92 -256 -137c-155 -109 -312 -217 -467 -325c-71 -48 -172 -161 -172 -252c0 -98 53 -182 160 -182h1472c87 0 160 72 160 160z"/>
+                     </svg>
+                    <span class="padding-left noprint">Send me an email</span>
+                    <span class="padding-left print">sustarklemen1@gmail.com</span>
+                </a>
+                <a href="https://ko-fi.com/klemen2" class="center">
+                    <svg height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        id="Layer_1" data-name="Layer 1" viewBox="0 0 504.36 504.36">
+                        <defs>
+                            <style>
+                                .cls-1 {
+                                    fill: #00b9fe;
+                                }
+
+                                .cls-2 {
+                                    fill: #fff;
+                                    stroke: #000;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-width: 1.14px;
+                                }
+
+                                .cls-3 {
+                                    fill: #ff5e5b;
+                                }
+
+                                .cls-4 {
+                                    fill: url(#linear-gradient);
+                                }
+                            </style>
+                            <linearGradient id="linear-gradient" x1="163.6" y1="2319.39" x2="216.72" y2="2482.47"
+                                gradientTransform="translate(4.26 -2219.68)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#ff4ea3" />
+                                <stop offset="1" stop-color="#ff5e5b" />
+                            </linearGradient>
+                        </defs>
+                        <title>ko-fi</title>
+                        <circle class="cls-1" cx="252.18" cy="252.18" r="252.18" />
+                        <g id="Layer_1-2" data-name="Layer 1-2">
+                            <g id="Layer_1-3" data-name="Layer 1-3">
+                                <path class="cls-2"
+                                    d="M380.19,276.5A196.26,196.26,0,0,1,352,277.78V185.62h19.2a38.37,38.37,0,0,1,32,15.36,45.65,45.65,0,0,1,10.24,29.44A42.87,42.87,0,0,1,380.19,276.5Zm79.37-64a83.86,83.86,0,0,0-37.13-57.61A98.23,98.23,0,0,0,366.11,137H84.49a16.37,16.37,0,0,0-14.08,15.36v3.84s-1.28,124.17,1.28,192a42.11,42.11,0,0,0,42.24,39.68s129.29,0,190.73-1.28h9c35.84-9,38.4-42.24,38.4-60.16C422.43,329,472.36,279.06,459.56,212.5Z" />
+                                <path class="cls-3"
+                                    d="M208.66,334.11c3.84,1.28,5.12,0,5.12,0s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a771.87,771.87,0,0,0,65.29,64Z" />
+                                <path class="cls-4"
+                                    d="M211.22,335.39a4.75,4.75,0,0,0,3.84-1.28s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a799.58,799.58,0,0,0,66.57,65.29C208.66,335.39,209.94,335.39,211.22,335.39Z" />
+                            </g>
+                        </g>
+                    </svg>
+                    <span class="padding-left noprint">Buy me a Ko-fi</span>
+                    <span class="padding-left print">https://ko-fi.com/klemen2</span>
+                </a>
+              
+            </div>
+            
+        </div>
+    </footer>
+</body>
+
+</html>

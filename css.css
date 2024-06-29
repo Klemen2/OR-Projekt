@@ -1,0 +1,247 @@
+:root{
+    --color: black;
+    --bg-color: #f9f9f9;
+
+    --border-color: #c4c4c4;
+    --border-width: 2px;
+    --border-width-fig: 1px;
+    --border-style: solid;
+
+    --section-padding: 20px;
+
+    --link: #2b7cdf;
+    --link-hover: #1c60b3;
+
+    --title-padding: 10px;
+    --title-color: black;
+    
+}
+* {
+    box-sizing: border-box;
+}
+body{
+    background: var(--bg-color);
+    color: var(--color);
+    min-height: 100vh;
+    min-width: 100vw;
+    max-width: 100%;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: 
+      'head'
+      'context'
+      'content'
+      'foot'
+    ;
+    margin: 0;
+}
+
+header{
+    padding: var(--section-padding) 0 var(--section-padding) 0;
+    grid-area: head;
+    border-bottom-style: var(--border-style);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    font-size: x-large;
+}
+
+header a {
+    color:var(--color);
+}
+
+header a:hover {
+    color:var(--color);
+}
+
+footer{
+    border-top-style: var(--border-style);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    padding: var(--section-padding) 0 var(--section-padding) 0;
+    bottom: 0;
+    grid-area: foot;
+    margin-top:10px;
+}
+
+.content{
+    grid-area: content;
+}
+
+.title{
+    color: var(--title-color);
+    font-weight: bold;
+    font-size: xx-large;
+    padding: var(--title-padding) 0 var(--title-padding) 0;
+}
+.wrapper{
+    margin-right: auto;
+    margin-left: auto;
+    width: 900px;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.padding-left{
+    padding-left: 5px;
+}
+
+a{
+    text-decoration: none;
+    color: var(--link);
+}
+
+a:hover{
+    color: var(--link-hover);
+}
+
+.projects{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ptitle{
+    font-size: x-large;
+}
+
+.projects li{
+    border: 1px solid black;
+    margin: 2px;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.context{
+    grid-area: context;
+}
+
+.sticky{
+    position: sticky;
+    top:0;
+    z-index: 100;
+    background-color: var(--bg-color);
+    padding: 10px 0 10px 0;
+    border-bottom-style: var(--border-style);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+}
+
+.links > a { padding: 0 10px 0 10px;}
+
+.mini{
+    padding-left: 5px;
+    font-style: italic;
+    font-size: x-small;
+}
+
+img{
+    max-width:100%;
+}
+
+figure{
+    max-width: 100%;
+    border-style: var(--border-style);
+    border-width: var(--border-width-fig);
+    border-color: var(--border-color);
+    border-radius: 5px;
+}
+figcaption {
+    padding: 5px;
+}
+.imageRow{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.print{
+    display:none;
+}
+
+@media screen and (min-width: 700px) {
+    .imageRow{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .imageRow > figure{
+       width:400px;
+    }
+
+}
+
+.dropdown{
+    position: relative;
+  display: inline-block;
+}
+
+.submenu{
+    display:none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: fit-content;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+    white-space:nowrap;
+}
+
+.dropdown:hover>.submenu{
+    display: block;
+
+}
+
+.pagebreak{ 
+    page-break-after: always;
+    break-after: always;
+}
+
+@media print {
+    
+    @page {
+        margin: 14mm 16mm 14mm 16mm; 
+        width: 100%;
+        counter-increment: page;
+    }
+
+    body {
+        font-size: 15.5px !important; 
+    }
+
+    header, .sticky, .noprint, video { display:none; }
+    .imageRow{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .imageRow > figure{
+       width:400px;
+    }
+
+    
+    footer{
+        position: fixed;
+        bottom: 0;
+    }
+
+    .page::after {
+        
+    }
+
+    a {
+        color: black !important;
+    }
+
+    
+    .print{
+        display: initial;
+    }
+ }
