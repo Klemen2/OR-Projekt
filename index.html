@@ -22,12 +22,17 @@
                 <a href="#"><svg height="20px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-10 -250 1674 1792">
                     <path fill="currentColor" d="M1408 992v480c0 35 -29 64 -64 64h-384v-384h-256v384h-384c-35 0 -64 -29 -64 -64v-480c0 -2 1 -4 1 -6l575 -474l575 474c1 2 1 4 1 6zM1631 923l-62 74c-5 6 -13 10 -21 11h-3c-8 0 -15 -2 -21 -7l-692 -577l-692 577c-7 5 -15 8 -24 7c-8 -1 -16 -5 -21 -11l-62 -74 c-11 -13 -9 -34 4 -45l719 -599c42 -35 110 -35 152 0l244 204v-195c0 -18 14 -32 32 -32h192c18 0 32 14 32 32v408l219 182c13 11 15 32 4 45z"/>
                  </svg></a> |
+                <a href="#pacman">Pacman game</a> |
                 <span class="dropdown">
-                    <a href="#maze">Pacman game</a> |
+                    <a href="#gamelogic">Game Logic</a> |
                     <div class="submenu">
+                        <a href="#player">Player</a> |
+                        <a href="#ghost">Ghost</a> |
+                        <a href="#fruit">Fruit</a> |
+                        <a href="#comment">Comment</a>
                     </div>
                 </span>
-                
+                <a href="#generating-font">Generating font</a> |
                 <a href="#case">Case</a> |
                 <a href="https://github.com/Klemen2/OR-Projekt/tree/main/Pacman">Source code</a>
             </div>
@@ -55,20 +60,85 @@
                 </li>
             </ul>
   
-            <h1 id="maze">Pacman game</h1>
-            https://pacman.holenet.info/
-            
+            <h1 id="pacman">Pacman game</h1>
+            Pac-Man is a classic arcade game released in 1980 by Namco. 
+            Player controls Pac-Man, a yellow circular character, navigating through a maze while eating dots and avoiding four ghosts.
+            There are four energizer dots, located in the corners of the maze, which temporarily turn the ghosts blue, allowing Pac-Man to eat them for extra points. 
+            The goal of the game is to get as many points as you can, before the ghosts gets you.
 
+            <p>You can read more about the game and it's mechanich <a class="noprint" href="https://pacman.holenet.info/">here</a><span class="print">on https://pacman.holenet.info/</span>.
+
+            <h2 id="implementation">Implementation</h2>
+            A classic pacman map has a grid of 31 rows and 28 columns and looks like this.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Inc/pacman.h#L83-L115")</script>
+            Where 0 represents a wall, 1 represents a path, 2 represents a dot and 3 represents an energizer dot.
+            <p>
+            The player spawn at row 24, ghosts spawns at row 12, and "fruits" spawn at row 18. All between column 14 and 15.
+            <p>
+            The logic behind the game is pretty straight forward, we just check in what cell we are in, and move to the next one
+            if it's not a wall. A player needs some extra logic to collect the dots and fruits, and ghost needs to move around on their own.
+            <p> 
+            The game goes on until one of the ghosts colides with a player. In a classic game, you loose a life, but in my implementation you loose 
+            the game.
+                
+            <h1 id="gamelogic">Game Logic</h1>
+            To simplify draw calls so we don't need multiple layers, we draw grid, arrows, "score" text, "high score" text and dots once at the start of the game.
+
+            <h2 id="player">Player</h2>
+            Player logic is pretty straight forward. We just need to check if it can move in a given direction, and update the score. 
+            Most other things in the following functions are just translations between pixels and grid.
+            The only special part is the "tunnel" where we just teleport the player on the other side of the map by updating it's position in grid and on screen.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L469-L519")</script>
+            We also need to implement touch controlls for the player. We could connect a physical buttons or a joystick to the MCU,
+            but since it has a touch display we can implenet movement by creating sections in display.
+            <p>I decided to have up and down on both sides of the screen, so it's easier to play the game.
+            <p>Even though I set the touchscreen size the same as the screen, we still need to check if the given position is less than the screen.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L420-L467")</script>
+
+            <h2 id="ghost">Ghost</h2>
+            Ghost logic is pretty much the same as the player logic. The three differences are that it doesn't need to update the score, that it has to redraw dots
+            and that it randomly decides in what directions the ghost will move next at the intersections. 
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L320-L379")</script>
+            For ghosts 2, 3 and 4, we need to implenet wait functions. The ghosts waits until player has left 150 dots, 100 dots and 50 dots respectedly, and then get's moved to a ghost starting position so they can continue their jurney.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L260-L267")</script>
+            When the energizer is not active, the ghost is just checking if the player is colliding with it and it sets game over.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L381-L388")</script>
+            But when the energizer is active a gray color is drawn, and the score is adjusted acordingly if the player eats the ghost.
+            <p>The energizer is active for around 9 seconds, and then normal functionality of a ghost is resumed.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L390-L405")</script>
+            <h2 id="fruit">Fruit</h2>
+            Fruits spawns twice per level, once at 174 dots left and second time at 74 dots left and despawn after around 9 seconds.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L294-L297")</script>
+            The only thing that fruit does, is checking if the player is at it's position and increases the score if it is, drawing itself and despawning if it's not collected in time.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L104-L120")</script>
+            This function only clears fruit from the screen and sets the fruit function to empty function so the fruit is not active anymore.
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/Pacman/Core/Src/pacman.c#L92-L102")</script>
+           
+            <h2 id="comment">Comment</h2>
+            The game would run smoother if CPU cache was enabled, but it was causing unexpected bugs so I had to turn it off.
+            <p>The screen is pretty small, so creating animations for ghosts and a player was not "wroth it" since it wouldn't be that noticable,
+                but the performance would be slithly worse.
+            <p>There is also a bug that a player will change direction on a last button press, even if the press happened a while ago, so instead
+                of trying to fix it I decided it will be a feature so you can pre-move your next move.
+           
+            <h1>Things for STM32</h1>
+            <h2 id="generating-font">Generating font</h2>
+            I wanted a font with arrow keys, so I look online and found <a class="noprint" href="https://github.com/zst-embedded/STM32-LCD_Font_Generator">this</a><span class="print">https://github.com/zst-embedded/STM32-LCD_Font_Generator</span> project by zst-embedded,
+            that generates font with python. The code didn't work since there was a lot of changes in the libraries used and I had to change a few things to make it work. 
+            <p>More specificly this function of PIL library that was deprecated:
+            <script>embed("https://github.com/zst-embedded/STM32-LCD_Font_Generator/blob/e0317f3eefef269a888b6823f131bd655fdcb7a7/stm32-font.py#L23")</script>
+            to this
+            <script>embed("https://github.com/Klemen2/OR-Projekt/blob/df8d17022deae06410df6b4c46d20c82c5c52255/STM32-LCD_Font_Generator/stm32-font.py#L35-L36")</script>
+            and while I was at it, I also added a few more functionalities, like character offset and generating source files (.c) instead of just header files (.h).
             
-            
-            <h1 id="case">Case</h1>
+            <h2 id="case">Case for the MCU</h2>
             Since standalone STM32H750B-DK is not the most comfortable thing to hold in hands so I also designed a cases for easier useage of it. 
             The case can be easily opened from the back to access board connectors that are on the back, all other connectors that are on the side are also accessible.
             <p>Before printing the case needs to be scaled to match 3D printer tolerances by up to 1%, since it's designed 1:1 with the CAD files that I found <a class="noprint" href="https://www.st.com/en/evaluation-tools/stm32h750b-dk.html#cad-resources">here</a><span class="print">https://www.st.com/en/evaluation-tools/stm32h750b-dk.html#cad-resources</span>.
             Otherwise you will need a lot of sanding if you decide not to do so.
             <p>You will need 4 screws. I'm using Ø2.5 10 mm with a head hight of 2.5mm that I had laying around.
 
-            <p>The case was designed in blender and you can find it <a class="noprint" href="https://makerworld.com/en/models/517051">here</a><span class="print">https://makerworld.com/en/models/517051</span>.
+            <p>The case was designed in blender and you can find it <a class="noprint" href="https://makerworld.com/en/models/517051">here</a><span class="print">on https://makerworld.com/en/models/517051</span>.
 
             <div class="imageRow">
                 <figure>
